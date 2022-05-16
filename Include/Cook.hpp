@@ -7,11 +7,18 @@
 
 #pragma once
 
+#include <threads.h>
+#include "Pizza.hpp"
+
 class Cook {
     public:
         Cook();
         ~Cook() = default;
 
+        void create(void *(*fptr)(void *), Pizza &arg);
+        void join();
+
     protected:
     private:
+        pthread_t _thread;
 };
