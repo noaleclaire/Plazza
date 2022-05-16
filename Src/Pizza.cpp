@@ -5,41 +5,42 @@
 ** Pizza
 */
 
-#include <vector>
+#include <map>
+#include <stdexcept>
 #include "Pizza.hpp"
 #include "../Include/Exceptions/PizzaException.hpp"
 
-static const std::vector<std::pair<std::string, PizzaType>> pizzaTypes = {
-    std::make_pair("Regina", Regina), std::make_pair("Margarita", Margarita),
-    std::make_pair("Americana", Americana), std::make_pair("Fantasia", Fantasia)
+static const std::map<std::string, std::pair<PizzaType, std::size_t>> pizzaTypes = {
+    std::make_pair("Regina", std::make_pair(Regina, 2)),
+    std::make_pair("Margarita", std::make_pair(Margarita, 1)),
+    std::make_pair("Americana", std::make_pair(Americana, 2)),
+    std::make_pair("Fantasia", std::make_pair(Fantasia, 4))
 };
 
-static const std::vector<std::pair<std::string, PizzaSize>> pizzaSizes = {
+static const std::map<std::string, PizzaSize> pizzaSizes = {
     std::make_pair("S", S), std::make_pair("M", M),
-    std::make_pair("L", L), std::make_pair("XL", XL), std::make_pair("XXL", XXL)
+    std::make_pair("L", L), std::make_pair("XL", XL),
+    std::make_pair("XXL", XXL)
 };
 
 Pizza::Pizza(std::string &pizzaType, std::string &pizzaSize)
 {
     int exist = -1;
-
-    for (int i = 0; i < pizzaTypes.size(); i++) {
-        if (pizzaTypes.at(i).first.compare(pizzaType) == 0)
-            exist = i;
-    }
-    if (exist == -1)
+    try {
+        pizzaTypes.at(pizzaType);
+    } catch (const std::out_of_range &e) {
         throw PizzaException("This pizza type doesn't exist",
         " Error in : Pizza::Pizza(std::string &pizzaType, std::size_t &pizzaSize)");
-    this->_pizzaType = pizzaTypes.at(exist).second;
-    exist = -1;
-    for (int i = 0; i < pizzaSizes.size(); i++) {
-        if (pizzaSizes.at(i).first.compare(pizzaSize) == 0)
-            exist = i;
     }
-    if (exist == -1)
+    this->_pizzaType = pizzaTypes.at(pizzaType).first;
+    this->_bakedTime = pizzaTypes.at(pizzaType).second;
+    try {
+        pizzaSizes.at(pizzaSize);
+    } catch (const std::out_of_range &e) {
         throw PizzaException("This pizza size doesn't exist",
         " Error in : Pizza::Pizza(std::string &pizzaType, std::size_t &pizzaSize)");
-    this->_pizzaSize = pizzaSizes.at(exist).second;
+    }
+    this->_pizzaSize = pizzaSizes.at(pizzaSize);
 }
 
 Pizza::~Pizza()
@@ -59,4 +60,9 @@ PizzaSize Pizza::getPizzaSize() const
 Pizza::PizzaBaked Pizza::getPizzaBaked() const
 {
     return (this->_pizzaBaked);
+}
+
+size_t Pizza::getBakedTime() const
+{
+    return (this->_bakedTime);
 }

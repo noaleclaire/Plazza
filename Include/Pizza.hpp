@@ -36,10 +36,12 @@ class Pizza {
         PizzaType getPizzaType() const;
         PizzaSize getPizzaSize() const;
         PizzaBaked getPizzaBaked() const;
+        size_t getBakedTime() const;
 
     protected:
     private:
         PizzaType _pizzaType;
         PizzaSize _pizzaSize;
         PizzaBaked _pizzaBaked = NO;
+        size_t _bakedTime;
 };
