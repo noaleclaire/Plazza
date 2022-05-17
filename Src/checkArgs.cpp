@@ -8,17 +8,18 @@
 #include <string>
 #include <stdexcept>
 
-bool isInteger(char *str)
+bool isInteger(std::string str, int &nb)
 {
-    std::string tmp = std::string(str);
+    std::string tmp = str;
     std::size_t pos;
 
     try {
-        long res = std::stol(tmp, &pos);
+        int res = std::stoi(tmp, &pos);
         if (pos != tmp.size())
             return (false);
         if (res < 0)
             return (false);
+        nb = res;
     } catch (std::invalid_argument const &e) {
         return (false);
     }
@@ -29,6 +30,7 @@ bool checkMultiplier(char *multiplier)
 {
     std::string tmp = std::string(multiplier);
     std::size_t pos;
+    int nb = 0;
 
     if (tmp.find('.') != std::string::npos) {
         try {
@@ -43,18 +45,20 @@ bool checkMultiplier(char *multiplier)
             return (false);
         }
     }
-    if (!isInteger(multiplier))
+    if (!isInteger(tmp, nb))
         return (false);
     return (true);
 }
 
 bool checkErrorArgs(char **av)
 {
+    int nb = 0;
+
     if (!checkMultiplier(av[1]))
         return (false);
-    if (!isInteger(av[2]))
+    if (!isInteger(std::string(av[2]), nb))
         return (false);
-    if (!isInteger(av[3]))
+    if (!isInteger(std::string(av[3]), nb))
         return (false);
     return (true);
 }

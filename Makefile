@@ -6,7 +6,9 @@
 ##
 
 SRC		=	Src/main.cpp		\
-			Src/checkArgs.cpp
+			Src/checkArgs.cpp \
+			Src/Parser.cpp \
+			Src/Pizza.cpp \
 
 OBJ		=	$(SRC:%.cpp=%.o)
 

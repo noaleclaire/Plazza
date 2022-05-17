@@ -6,7 +6,12 @@
 */
 
 #include <string>
+#include <vector>
+#include <unistd.h>
+#include <string.h>
 #include <iostream>
+#include <cstring>
+#include <map>
 
 bool checkErrorArgs(char **av);
 
