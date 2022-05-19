@@ -12,14 +12,18 @@
 #include <iostream>
 #include <cstring>
 #include <map>
+#include "../Include/Core.hpp"
 
 bool checkErrorArgs(char **av);
 
 int main(int ac, char **av)
 {
+    Core core;
+
     if (ac != 4)
         return (84);
     if (!checkErrorArgs(av))
         return (84);
+    core.managePlazza(atoi(av[1]), atoi(av[2]), atoi(av[3]));
     return (0);
 }

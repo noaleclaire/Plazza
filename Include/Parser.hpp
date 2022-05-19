@@ -14,15 +14,17 @@
 #include <iostream>
 #include <cstring>
 #include <map>
+#include <memory>
+#include "Pizza.hpp"
 
 class Parser {
     public:
         Parser();
         ~Parser();
-        void getCommandLine();
-        void splitCommandLine();
-        void errorHandling();
-        void createPizza(std::vector<std::string> pizza);
+
+        void manageCommandLine();
+
+        std::vector<std::shared_ptr<Pizza>> getPizzas();
 
     protected:
     private:
@@ -30,4 +32,9 @@ class Parser {
         int _start;
         std::vector<std::vector<std::string>> _pizza;
         std::vector<std::string> _cmd;
+        std::vector<std::shared_ptr<Pizza>> _pizzas;
+
+        void createPizza(std::vector<std::string> pizza);
+        void getCommandLine();
+        void splitCommandLine();
 };

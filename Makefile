@@ -5,16 +5,23 @@
 ## Makefile
 ##
 
-SRC		=	Src/main.cpp		\
-			Src/checkArgs.cpp \
-			Src/Parser.cpp \
-			Src/Pizza.cpp \
+SRC		=	Src/main.cpp				\
+			Src/checkArgs.cpp			\
+			Src/ConditionVariable.cpp	\
+			Src/Core.cpp				\
+			Src/Cook.cpp				\
+			Src/Factory.cpp				\
+			Src/Kitchen.cpp				\
+			Src/Mutex.cpp				\
+			Src/Parser.cpp				\
+			Src/Pizza.cpp				\
+			Src/ScopedLock.cpp			\
 
 OBJ		=	$(SRC:%.cpp=%.o)
 
 CFLAGS	=	-std=c++20 -Wall -Wextra -I./include
 
-LDFLAGS	=	-pthread
+LDFLAGS	=	-lpthread -pthread
 
 NAME	=	plazza
 

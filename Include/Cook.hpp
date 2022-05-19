@@ -7,18 +7,33 @@
 
 #pragma once
 
-#include <threads.h>
+#include <memory>
+#include <thread>
+#include <string>
+#include "Thread.hpp"
 #include "Pizza.hpp"
 
 class Cook {
     public:
-        Cook();
+        Cook(std::size_t id, std::size_t kitchenId);
+        Cook(Cook const &other);
         ~Cook() = default;
+        Cook &operator=(Cook const &other);
 
-        void create(void *(*fptr)(void *), Pizza &arg);
-        void join();
+        void cookPizza(std::shared_ptr<Pizza> pizza);
+
+        bool getBaking() const;
+        std::size_t getKitchenId() const;
+        std::size_t getId() const;
+
+        void setBaking(bool baking);
 
     protected:
     private:
-        pthread_t _thread;
+        std::size_t _id;
+        std::size_t _kitchenId;
+        Thread _thread;
+        bool _baking;
+
+        void bakePizza(std::shared_ptr<Pizza> pizza);
 };

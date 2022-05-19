@@ -7,14 +7,14 @@
 
 #include <map>
 #include <stdexcept>
-#include "Pizza.hpp"
+#include "../Include/Pizza.hpp"
 #include "../Include/Exceptions/PizzaException.hpp"
 
 static const std::map<std::string, std::pair<PizzaType, std::size_t>> pizzaTypes = {
-    std::make_pair("Regina", std::make_pair(Regina, 2)),
-    std::make_pair("Margarita", std::make_pair(Margarita, 1)),
-    std::make_pair("Americana", std::make_pair(Americana, 2)),
-    std::make_pair("Fantasia", std::make_pair(Fantasia, 4))
+    std::make_pair("regina", std::make_pair(Regina, 2)),
+    std::make_pair("margarita", std::make_pair(Margarita, 1)),
+    std::make_pair("americana", std::make_pair(Americana, 2)),
+    std::make_pair("fantasia", std::make_pair(Fantasia, 4))
 };
 
 static const std::map<std::string, PizzaSize> pizzaSizes = {
@@ -65,4 +65,9 @@ Pizza::PizzaBaked Pizza::getPizzaBaked() const
 size_t Pizza::getBakedTime() const
 {
     return (this->_bakedTime);
+}
+
+void Pizza::setPizzaBaked(PizzaBaked pizzaBaked)
+{
+    _pizzaBaked = pizzaBaked;
 }

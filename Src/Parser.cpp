@@ -7,25 +7,28 @@
 
 #include "../Include/Parser.hpp"
 #include "../Include/Pizza.hpp"
+#include "../Include/Factory.hpp"
+#include "../Include/Kitchen.hpp"
 #include "../Include/Exceptions/PizzaException.hpp"
 
 bool isInteger(std::string str, int &nb);
 
 Parser::Parser() : _start(0)
 {
-    while(1) {
-        std::getline(std::cin, _buffer);
-        getCommandLine();
-        _buffer.clear();
-        splitCommandLine();
-        _cmd.clear();
-        _start = 0;
-        errorHandling();
-    }
 }
 
 Parser::~Parser()
 {
+}
+
+void Parser::manageCommandLine()
+{
+    std::getline(std::cin, _buffer);
+    getCommandLine();
+    _buffer.clear();
+    splitCommandLine();
+    _cmd.clear();
+    _start = 0;
 }
 
 void Parser::getCommandLine()
@@ -63,20 +66,22 @@ void Parser::createPizza(std::vector<std::string> pizza)
     std::string pizzaType = pizza.at(0);
     std::string pizzaSize = pizza.at(1);
     int pizza_nb = 0;
+
     isInteger((pizza.at(2).substr(1, pizza.at(2).length() - 1)), pizza_nb);
     for (int i = 0; i < pizza_nb; i++) {
         try {
-            Pizza new_pizza(pizzaType, pizzaSize);
+            _pizzas.push_back(Factory::createPizza(pizzaType, pizzaSize));
         } catch (const PizzaException &e) {
             std::cerr << e.what() << std::endl;
         }
     }
 }
 
-void Parser::errorHandling()
+std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
 {
     int nb = -1;
 
+    _pizzas.clear();
     for (int i = 0; i < _pizza.size(); i++) {
         for (int j = 0; j < _pizza.at(i).size(); j++) {
             if (_pizza.at(i).size() != 3) {
@@ -100,4 +105,5 @@ void Parser::errorHandling()
             createPizza(_pizza.at(i));
         }
     }
+    return (_pizzas);
 }

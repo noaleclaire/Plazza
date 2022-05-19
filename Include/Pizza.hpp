@@ -38,6 +38,8 @@ class Pizza {
         PizzaBaked getPizzaBaked() const;
         size_t getBakedTime() const;
 
+        void setPizzaBaked(PizzaBaked pizzaBaked);
+
     protected:
     private:
         PizzaType _pizzaType;
