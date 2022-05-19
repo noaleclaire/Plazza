@@ -8,6 +8,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include "../Include/Ingredients.hpp"
 
 enum PizzaType {
     Regina = 1,
@@ -37,13 +39,16 @@ class Pizza {
         PizzaSize getPizzaSize() const;
         PizzaBaked getPizzaBaked() const;
         size_t getBakedTime() const;
+        std::vector<Ingredients> getIngredients() const;
 
         void setPizzaBaked(PizzaBaked pizzaBaked);
 
     protected:
     private:
+        void setIngredients();
         PizzaType _pizzaType;
         PizzaSize _pizzaSize;
         PizzaBaked _pizzaBaked = NO;
         size_t _bakedTime;
+        std::vector<Ingredients> _ingredients;
 };

@@ -71,3 +71,42 @@ void Pizza::setPizzaBaked(PizzaBaked pizzaBaked)
 {
     _pizzaBaked = pizzaBaked;
 }
+
+void Pizza::setIngredients()
+{
+    switch (_pizzaType)
+    {
+    case Regina:
+        _ingredients.push_back(Ingredients(Ingredients::DOE));
+        _ingredients.push_back(Ingredients(Ingredients::TOMATO));
+        _ingredients.push_back(Ingredients(Ingredients::GRUYERE));
+        _ingredients.push_back(Ingredients(Ingredients::HAM));
+        _ingredients.push_back(Ingredients(Ingredients::MUSHROOM));
+        break;
+    case Margarita:
+        _ingredients.push_back(Ingredients(Ingredients::DOE));
+        _ingredients.push_back(Ingredients(Ingredients::TOMATO));
+        _ingredients.push_back(Ingredients(Ingredients::GRUYERE));
+        break;
+    case Americana:
+        _ingredients.push_back(Ingredients(Ingredients::DOE));
+        _ingredients.push_back(Ingredients(Ingredients::TOMATO));
+        _ingredients.push_back(Ingredients(Ingredients::GRUYERE));
+        _ingredients.push_back(Ingredients(Ingredients::STEAK));
+        break;
+    case Fantasia:
+        _ingredients.push_back(Ingredients(Ingredients::DOE));
+        _ingredients.push_back(Ingredients(Ingredients::TOMATO));
+        _ingredients.push_back(Ingredients(Ingredients::EGGPLANT));
+        _ingredients.push_back(Ingredients(Ingredients::GOAT_CHEESE));
+        _ingredients.push_back(Ingredients(Ingredients::CHIEF_LOVE));
+        break;
+    default:
+        break;
+    }
+}
+
+std::vector<Ingredients> Pizza::getIngredients() const
+{
+    return (_ingredients);
+}
