@@ -15,19 +15,24 @@ _replaceTime(replaceTime),  _isCopy(false)
     _refillStart = std::chrono::system_clock::now();
     _afkStart = std::chrono::system_clock::now();
     std::cout << "The kitchen " << _id << " is now open !" << std::endl;
-    for (std::size_t increm = 0; increm < nbCooks; increm++)
+    for (std::size_t increm = 0; increm < nbCooks; increm++) {
         _cooks.push_back(std::make_shared<Cook>(Cook(increm + 1, _id)));
+        _cooks.at(increm)->create(_pizzas);
+        _cooks.at(increm)->join();
+    }
 }
 
-Kitchen::Kitchen(Kitchen const &other)
-{
-    _isCopy = true;
-    _id = other._id;
-    _nbCooks = other._nbCooks;
-    _replaceTime = other._replaceTime;
-    _cooks = other._cooks;
-    _afkStart = other._afkStart;
-}
+// Kitchen::Kitchen(Kitchen const &other)
+// {
+//     _isCopy = true;
+//     _id = other._id;
+//     _nbCooks = other._nbCooks;
+//     _replaceTime = other._replaceTime;
+//     _cooks = other._cooks;
+//     _afkStart = other._afkStart;
+//     _stock = other._stock;
+//     _refillStart = other._refillStart;
+// }
 
 Kitchen::~Kitchen()
 {
@@ -46,23 +51,6 @@ bool Kitchen::addPizza(std::shared_ptr<Pizza> pizza)
 void Kitchen::update()
 {
     isRefill();
-    for (auto &c : _cooks) {
-        try {
-            auto pizza = _pizzas.at(0);
-        } catch (const std::out_of_range &e) {
-        }
-        auto pizza = _pizzas.pop();
-        if (isIngredientAvailable(pizza->getIngredients())) {
-            if (!c->cookPizza(pizza)) {
-                _pizzas.push(pizza);
-            } else {
-                consumeIngredients(pizza->getIngredients());
-            }
-        } else {
-            _pizzas.push(pizza);
-            return;
-        }
-    }
     if (!AreAllCooksAvailable())
         _afkStart = std::chrono::system_clock::now();
 }

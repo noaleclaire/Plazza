@@ -16,8 +16,4 @@ class Factory {
 
     protected:
     private:
-        static std::shared_ptr<Pizza> createMargarita(const std::string size);
-        static std::shared_ptr<Pizza> createRegina(const std::string size);
-        static std::shared_ptr<Pizza> createAmericana(const std::string size);
-        static std::shared_ptr<Pizza> createFantasia(const std::string size);
 };

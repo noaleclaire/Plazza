@@ -53,15 +53,6 @@ class Queue {
             _size--;
             return (value);
         }
-        T at(std::size_t index)
-        {
-            try {
-                _values.at(index);
-            } catch (const std::out_of_range &e) {
-                throw std::out_of_range;
-            }
-            return (_values.at(index));
-        }
         bool isEmptyQueue() const
         {
             return (_values.empty());

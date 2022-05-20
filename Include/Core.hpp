@@ -8,21 +8,18 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <map>
 #include <memory>
 #include "Kitchen.hpp"
 
 class Core {
     public:
+        static std::map<std::size_t, Kitchen *> _kitchens;
         static float _multiplier;
-        Core() = default;
-        ~Core() = default;
 
-        void managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime);
+        static void managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime);
 
     protected:
     private:
-        std::vector<std::shared_ptr<Kitchen>> _kitchens;
-
-        void checkKitchens();
+        static void checkKitchens();
 };

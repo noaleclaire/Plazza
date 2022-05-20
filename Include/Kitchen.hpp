@@ -21,13 +21,20 @@
 class Kitchen {
     public:
         Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime);
-        Kitchen(Kitchen const &other);
+        // Kitchen(Kitchen const &other);
         ~Kitchen();
 
         bool addPizza(std::shared_ptr<Pizza> pizza);
+        bool isIngredientAvailable(std::vector<Ingredients> ingredients);
+        void consumeIngredients(std::vector<Ingredients> ingredients);
 
         void update();
         bool isClose() const;
+
+        std::size_t getId()
+        {
+            return _id;
+        }
 
     protected:
     private:
@@ -44,7 +51,5 @@ class Kitchen {
         bool isRefill();
         bool isThereAvailableCooks() const;
         bool AreAllCooksAvailable() const;
-        bool isIngredientAvailable(std::vector<Ingredients> ingredients);
-        void consumeIngredients(std::vector<Ingredients> ingredients);
         void refill();
 };

@@ -12,6 +12,7 @@
 #include <string>
 #include "Thread.hpp"
 #include "Pizza.hpp"
+#include "Queue.hpp"
 
 class Cook {
     public:
@@ -20,7 +21,8 @@ class Cook {
         ~Cook() = default;
         Cook &operator=(Cook const &other);
 
-        bool cookPizza(std::shared_ptr<Pizza> pizza);
+        void create(Queue<std::shared_ptr<Pizza>> &pizzas);
+        void join();
 
         bool getBaking() const;
         std::size_t getKitchenId() const;
@@ -35,5 +37,5 @@ class Cook {
         Thread _thread;
         bool _baking;
 
-        void bakePizza(std::shared_ptr<Pizza> pizza);
+        void handlePizzas(Queue<std::shared_ptr<Pizza>> &pizzas);
 };

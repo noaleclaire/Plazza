@@ -7,7 +7,6 @@
 
 SRC		=	Src/main.cpp				\
 			Src/checkArgs.cpp			\
-			Src/plazza.cpp				\
 			Src/Core.cpp				\
 			Src/Cook.cpp				\
 			Src/Factory.cpp				\

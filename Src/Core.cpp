@@ -12,6 +12,7 @@
 
 static std::size_t kitchenId = 1;
 float Core::_multiplier;
+std::map<std::size_t, Kitchen *> Core::_kitchens;
 
 void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime)
 {
@@ -24,16 +25,18 @@ void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t repla
         pizzas = parser.getPizzas();
         while (1) {
             for (auto &p : pizzas) {
-                for (auto &k : _kitchens) {
-                    if (k->addPizza(p)) {
+                for (auto &k : Core::_kitchens) {
+                    if (k.second->addPizza(p)) {
                         auto it = std::find(pizzas.begin(), pizzas.end(), p);
                         pizzas.erase(it);
                     }
-                    k->update();
+                    k.second->update();
                 }
             }
             if (pizzas.size() != 0) {
-                _kitchens.push_back(std::make_shared<Kitchen>(Kitchen(kitchenId, nbCooks, replaceTime)));
+                std::cout << "create" << std::endl;
+                Core::_kitchens.insert(std::make_pair(kitchenId, new Kitchen(kitchenId, nbCooks, replaceTime)));
+                std::cout << "after" << std::endl;
                 kitchenId++;
             } else {
                 break;
@@ -45,10 +48,10 @@ void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t repla
 
 void Core::checkKitchens()
 {
-    for (auto &k : _kitchens) {
-        if (k->isClose()) {
-            auto it = std::find(_kitchens.begin(), _kitchens.end(), k);
-            _kitchens.erase(it);
+    for (auto &k : Core::_kitchens) {
+        if (k.second->isClose()) {
+            auto it = std::find(Core::_kitchens.begin(), Core::_kitchens.end(), k);
+            Core::_kitchens.erase(it);
         }
     }
 }
