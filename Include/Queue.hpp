@@ -10,6 +10,7 @@
 #include <vector>
 #include <thread>
 #include <stdexcept>
+#include <iostream>
 #include "Mutex.hpp"
 #include "ScopedLock.hpp"
 #include "ConditionVariable.hpp"

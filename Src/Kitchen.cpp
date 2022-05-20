@@ -19,18 +19,6 @@ _replaceTime(replaceTime),  _isCopy(false)
         _cooks.push_back(std::make_shared<Cook>(Cook(increm + 1, _id)));
 }
 
-// Kitchen::Kitchen(Kitchen const &other)
-// {
-//     _isCopy = true;
-//     _id = other._id;
-//     _nbCooks = other._nbCooks;
-//     _replaceTime = other._replaceTime;
-//     _cooks = other._cooks;
-//     _afkStart = other._afkStart;
-//     _stock = other._stock;
-//     _refillStart = other._refillStart;
-// }
-
 Kitchen::~Kitchen()
 {
     if (!_isCopy)

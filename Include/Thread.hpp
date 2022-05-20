@@ -23,7 +23,7 @@ class Thread {
             _thread.detach();
         }
         template<typename Function, typename... Args>
-        void create(Function fct, Args... args)
+        void create(Function fct, Args&&... args)
         {
             _thread = std::thread(fct, args...);
         };
