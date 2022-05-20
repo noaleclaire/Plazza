@@ -15,11 +15,8 @@ _replaceTime(replaceTime),  _isCopy(false)
     _refillStart = std::chrono::system_clock::now();
     _afkStart = std::chrono::system_clock::now();
     std::cout << "The kitchen " << _id << " is now open !" << std::endl;
-    for (std::size_t increm = 0; increm < nbCooks; increm++) {
+    for (std::size_t increm = 0; increm < nbCooks; increm++)
         _cooks.push_back(std::make_shared<Cook>(Cook(increm + 1, _id)));
-        _cooks.at(increm)->create(_pizzas);
-        _cooks.at(increm)->join();
-    }
 }
 
 // Kitchen::Kitchen(Kitchen const &other)
@@ -38,6 +35,14 @@ Kitchen::~Kitchen()
 {
     if (!_isCopy)
         std::cout << "The kitchen " << _id << " closes its doors..." << std::endl;
+}
+
+void Kitchen::createAndJoinCook()
+{
+    for (const auto &c : _cooks) {
+        c->create(_pizzas);
+        c->join();
+    }
 }
 
 bool Kitchen::addPizza(std::shared_ptr<Pizza> pizza)

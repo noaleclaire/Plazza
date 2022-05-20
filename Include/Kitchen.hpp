@@ -28,6 +28,7 @@ class Kitchen {
         bool isIngredientAvailable(std::vector<Ingredients> ingredients);
         void consumeIngredients(std::vector<Ingredients> ingredients);
 
+        void createAndJoinCook();
         void update();
         bool isClose() const;
 

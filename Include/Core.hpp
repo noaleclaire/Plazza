@@ -19,6 +19,11 @@ class Core {
 
         static void managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime);
 
+        static int getSize()
+        {
+            return (_kitchens.size());
+        }
+
     protected:
     private:
         static void checkKitchens();

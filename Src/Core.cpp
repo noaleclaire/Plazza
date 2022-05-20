@@ -36,6 +36,7 @@ void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t repla
             if (pizzas.size() != 0) {
                 std::cout << "create" << std::endl;
                 Core::_kitchens.insert(std::make_pair(kitchenId, new Kitchen(kitchenId, nbCooks, replaceTime)));
+                Core::_kitchens.at(kitchenId)->createAndJoinCook();
                 std::cout << "after" << std::endl;
                 kitchenId++;
             } else {
