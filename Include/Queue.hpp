@@ -23,6 +23,7 @@ class Queue {
         {
             ScopedLock lock(&_mutex, ScopedLock::BASIC);
             _values.push_back(value);
+            _size++;
             _cv.notifyOne();
         }
         bool tryPop(T &value)
@@ -33,12 +34,13 @@ class Queue {
             lock.lock();
             value = _values.at(0);
             _values.erase(_values.begin());
+            _size--;
             return (true);
         }
         T pop()
         {
             ScopedLock lock(&_mutex, ScopedLock::BASIC);
-            int value = 0;
+            T value = 0;
 
             _cv.wait(lock.getLock(), [this]{
                 if (_values.empty())
@@ -47,11 +49,16 @@ class Queue {
             });
             value = _values.at(0);
             _values.erase(_values.begin());
+            _size--;
             return (value);
         }
         bool isEmptyQueue() const
         {
             return (_values.empty());
+        }
+        std::size_t size() const
+        {
+            return (_size);
         }
 
     protected:
@@ -59,4 +66,5 @@ class Queue {
         Mutex _mutex;
         ConditionVariable _cv;
         std::vector<T> _values;
+        std::size_t _size = 0;
 };

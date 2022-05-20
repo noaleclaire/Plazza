@@ -8,14 +8,17 @@
 #include "../Include/Core.hpp"
 #include "../Include/Parser.hpp"
 #include <algorithm>
+#include <iostream>
 
 static std::size_t kitchenId = 1;
+float Core::_multiplier;
 
-void Core::managePlazza(std::size_t multiplier, std::size_t nbCooks, std::size_t replaceTime)
+void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime)
 {
     Parser parser;
     std::vector<std::shared_ptr<Pizza>> pizzas;
 
+    Core::_multiplier = multiplier;
     while(1) {
         parser.manageCommandLine();
         pizzas = parser.getPizzas();
@@ -26,10 +29,12 @@ void Core::managePlazza(std::size_t multiplier, std::size_t nbCooks, std::size_t
                         auto it = std::find(pizzas.begin(), pizzas.end(), p);
                         pizzas.erase(it);
                     }
+                    k->update();
                 }
             }
             if (pizzas.size() != 0) {
-                _kitchens.push_back(std::make_shared<Kitchen>(Kitchen(kitchenId, nbCooks, replaceTime, multiplier)));
+                _kitchens.push_back(std::make_shared<Kitchen>(Kitchen(kitchenId, nbCooks, replaceTime)));
+                kitchenId++;
             } else {
                 break;
             }

@@ -6,8 +6,10 @@
 */
 
 #include "../Include/Cook.hpp"
+#include "../Include/Core.hpp"
 #include <stdexcept>
 #include <memory>
+#include <cmath>
 #include <iostream>
 
 Cook::Cook(std::size_t id, std::size_t kitchenId) : _id(id), _kitchenId(kitchenId)
@@ -30,24 +32,25 @@ Cook &Cook::operator=(Cook const &other)
     return (*this);
 }
 
-void Cook::cookPizza(std::shared_ptr<Pizza> pizza)
+bool Cook::cookPizza(std::shared_ptr<Pizza> pizza)
 {
     if (!_baking) {
-        _thread.detach();
         _thread.create(&Cook::bakePizza, this, pizza);
         _thread.join();
+        return (true);
     }
+    return (false);
 }
 
 void Cook::bakePizza(std::shared_ptr<Pizza> pizza)
 {
-    std::cout << "[Kitchen " << getKitchenId() << "] Cook " << getId() << ": starts baking the pizza " << pizza->getPizzaType() << "." << std::endl;
-    setBaking(true);
+    std::cout << "[Kitchen " << _kitchenId << "] Cook " << _id << ": starts baking the pizza " << pizza->getPizzaType() << "." << std::endl;
+    _baking = true;
     pizza->setPizzaBaked(Pizza::IN_PROGRESS);
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
-    while ((std::chrono::system_clock::now() - start) < std::chrono::seconds(pizza->getBakedTime()));
-    std::cout << "[Kitchen " << getKitchenId() << "] Cook " << getId() << ": finished baking the pizza " << pizza->getPizzaType() << "." << std::endl;
-    setBaking(false);
+    while ((std::chrono::system_clock::now() - start) < std::chrono::milliseconds(std::lround(pizza->getBakedTime() * 1000 * Core::_multiplier)));
+    std::cout << "[Kitchen " << _kitchenId << "] Cook " << _id << ": finished baking the pizza " << pizza->getPizzaType() << "." << std::endl;
+    _baking = false;
     pizza->setPizzaBaked(Pizza::YES);
 }
 

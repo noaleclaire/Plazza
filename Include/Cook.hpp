@@ -20,7 +20,7 @@ class Cook {
         ~Cook() = default;
         Cook &operator=(Cook const &other);
 
-        void cookPizza(std::shared_ptr<Pizza> pizza);
+        bool cookPizza(std::shared_ptr<Pizza> pizza);
 
         bool getBaking() const;
         std::size_t getKitchenId() const;

@@ -11,12 +11,22 @@
 
 class ConditionVariable {
     public:
-        ConditionVariable();
-        ~ConditionVariable();
+        ConditionVariable() = default;
+        ~ConditionVariable() = default;
 
-        void notifyOne();
-        void notifyAll();
-        void wait(std::unique_lock<std::mutex> &lock, bool (*predicate)(void));
+        void notifyOne()
+        {
+            cv.notify_one();
+        };
+        void notifyAll()
+        {
+            cv.notify_all();
+        };
+        template<typename Predicate>
+        void wait(std::unique_lock<std::mutex> &lock, Predicate &&predicate)
+        {
+            cv.wait(lock, predicate);
+        };
 
     protected:
     private:

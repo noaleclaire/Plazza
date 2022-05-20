@@ -7,10 +7,11 @@
 
 SRC		=	Src/main.cpp				\
 			Src/checkArgs.cpp			\
-			Src/ConditionVariable.cpp	\
+			Src/plazza.cpp				\
 			Src/Core.cpp				\
 			Src/Cook.cpp				\
 			Src/Factory.cpp				\
+			Src/Ingredients.cpp			\
 			Src/Kitchen.cpp				\
 			Src/Mutex.cpp				\
 			Src/Parser.cpp				\

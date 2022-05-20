@@ -8,8 +8,8 @@
 #include "../Include/Kitchen.hpp"
 #include <iostream>
 
-Kitchen::Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime, std::size_t multiplier) : _id(id), _nbCooks(nbCooks),
-_replaceTime(replaceTime), _multiplier(multiplier), _isCopy(false)
+Kitchen::Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime) : _id(id), _nbCooks(nbCooks),
+_replaceTime(replaceTime),  _isCopy(false)
 {
     std::cout << "The kitchen " << _id << " is now open !" << std::endl;
     for (std::size_t increm = 0; increm < nbCooks; increm++)
@@ -22,9 +22,7 @@ Kitchen::Kitchen(Kitchen const &other)
     _id = other._id;
     _nbCooks = other._nbCooks;
     _replaceTime = other._replaceTime;
-    _multiplier = other._multiplier;
     _cooks = other._cooks;
-    _pizzas = other._pizzas;
     _afkStart = other._afkStart;
 }
 
@@ -38,21 +36,23 @@ bool Kitchen::addPizza(std::shared_ptr<Pizza> pizza)
 {
     if (_pizzas.size() == 2 * _nbCooks)
         return (false);
-    _pizzas.push_back(pizza);
+    _pizzas.push(pizza);
     return (true);
 }
 
-void Kitchen::checkPizzas()
+void Kitchen::update()
 {
-    std::vector<std::shared_ptr<Pizza>>::iterator index = _pizzas.begin();
-
-    if (_pizzas.size() == 0)
-        return;
-    for (auto const &e : _pizzas) {
-        if (e->getPizzaBaked() == Pizza::YES) {
-            _pizzas.erase(index);
-        } else {
-            index++;
+    if (isRefill()) {
+        for (auto &c : _cooks) {
+            auto pizza = _pizzas.pop();
+            if (isIngredientAvailable(pizza->getIngredients())) {
+                if (!c->cookPizza(pizza)) {
+                    _pizzas.push(pizza);
+                }
+            } else {
+                _pizzas.push(pizza);
+                return;
+            }
         }
     }
 }
@@ -62,4 +62,51 @@ bool Kitchen::isClose() const
     if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5))
         return (true);
     return (false);
+}
+
+bool Kitchen::isRefill()
+{
+    if ((std::chrono::system_clock::now() - _refillStart) >= std::chrono::milliseconds(_replaceTime))
+        return (true);
+    return (false);
+}
+
+bool Kitchen::isThereAvailableCooks() const
+{
+    for (auto const &c : _cooks) {
+        if (!c->getBaking())
+            return (true);
+    }
+    return (false);
+}
+
+bool Kitchen::isIngredientAvailable(std::vector<Ingredients> ingredients)
+{
+    for (auto &i : ingredients) {
+        for (auto &s : _stock) {
+            if (s.first.getName().compare(i.getName()) == 0 && s.second == 0) {
+                refill();
+                _refillStart = std::chrono::system_clock::now();
+                return (false);
+            }
+        }
+    } 
+    return (true);
+}
+
+void Kitchen::consumeIngredients(std::vector<Ingredients> ingredients)
+{
+    for (auto &i : ingredients) {
+        for (auto &s : _stock) {
+            if (s.first.getName().compare(i.getName()) == 0) {
+                s.second--;
+            }
+        }
+    }
+}
+
+void Kitchen::refill()
+{
+    for (auto &s : _stock)
+        s.second = 5;
 }

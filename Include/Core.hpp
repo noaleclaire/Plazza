@@ -14,10 +14,11 @@
 
 class Core {
     public:
+        static float _multiplier;
         Core() = default;
         ~Core() = default;
 
-        void managePlazza(std::size_t multiplier, std::size_t nbCooks, std::size_t replaceTime);
+        void managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime);
 
     protected:
     private:
