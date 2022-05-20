@@ -34,15 +34,16 @@ class Kitchen {
         std::size_t _id;
         std::size_t _nbCooks;
         std::size_t _replaceTime;
+        Queue<std::shared_ptr<Pizza>> _pizzas;
         std::vector<std::pair<Ingredients, std::size_t>> _stock;
         std::vector<std::shared_ptr<Cook>> _cooks;
-        Queue<std::shared_ptr<Pizza>> _pizzas; 
         std::chrono::time_point<std::chrono::system_clock> _afkStart;
         std::chrono::time_point<std::chrono::system_clock> _refillStart;
         bool _isCopy;
 
         bool isRefill();
         bool isThereAvailableCooks() const;
+        bool AreAllCooksAvailable() const;
         bool isIngredientAvailable(std::vector<Ingredients> ingredients);
         void consumeIngredients(std::vector<Ingredients> ingredients);
         void refill();

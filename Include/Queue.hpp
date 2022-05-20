@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <thread>
+#include <stdexcept>
 #include "Mutex.hpp"
 #include "ScopedLock.hpp"
 #include "ConditionVariable.hpp"
@@ -51,6 +52,15 @@ class Queue {
             _values.erase(_values.begin());
             _size--;
             return (value);
+        }
+        T at(std::size_t index)
+        {
+            try {
+                _values.at(index);
+            } catch (const std::out_of_range &e) {
+                throw std::out_of_range;
+            }
+            return (_values.at(index));
         }
         bool isEmptyQueue() const
         {
