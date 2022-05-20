@@ -85,21 +85,21 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
     for (int i = 0; i < _pizza.size(); i++) {
         for (int j = 0; j < _pizza.at(i).size(); j++) {
             if (_pizza.at(i).size() != 3) {
-                std::cerr << "Invalid command" << std::endl;
+                std::cerr << "Command n°" << i << ": Invalid number of arguments.." << std::endl;
                 break;
             }
             if (_pizza.at(i).at(2).at(_pizza.at(i).at(2).length() - 1) == ';')
                 _pizza.at(i).at(2).at(_pizza.at(i).at(2).length() - 1) = '\0';
             if (_pizza.at(i).at(2).at(0) != 'x') {
-                std::cerr << "Invalid command" << std::endl;
+                std::cerr << "Command n°" << i << ": Invalid numbers of pizza (x(N)).." << std::endl;
                 break;
             }
             if (!isInteger((_pizza.at(i).at(2).substr(1, _pizza.at(i).at(2).length() - 1)), nb)) {
-                std::cerr << "Invalid command" << std::endl;
+                std::cerr << "Command n°" << i << ": Invalid number of pizzas xN pizza must be Integer.." << std::endl;
                 break;
             }
             if (nb == -1) {
-                std::cerr << "Invalid command" << std::endl;
+                std::cerr << "Command n°" << i << ": Invalid numbers of Pizza, number must be positive.." << std::endl;
                 break;
             }
             createPizza(_pizza.at(i));
