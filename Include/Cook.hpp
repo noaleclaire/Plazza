@@ -23,6 +23,7 @@ class Cook {
 
         void create(Queue<std::shared_ptr<Pizza>> &pizzas);
         void join();
+        Thread &getCookThread();
 
         bool getBaking() const;
         std::size_t getKitchenId() const;

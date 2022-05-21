@@ -23,17 +23,22 @@ class Queue {
 
         void push(T value)
         {
-            ScopedLock lock(&_mutex, ScopedLock::BASIC);
+            std::unique_lock<std::mutex> lock(mutex);
+            // ScopedLock lock(&_mutex, ScopedLock::BASIC);
+            std::cout << "là1" << std::endl;
             _values.push_back(value);
             _size++;
-            _cv.notifyOne();
+            cv.notify_one();
+            // _cv.notifyOne();
         }
         bool tryPop(T &value)
         {
-            ScopedLock lock(&_mutex, ScopedLock::DEFER);
+            std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
+            // ScopedLock lock(&_mutex, ScopedLock::DEFER);
             while (_values.empty())
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             lock.lock();
+            // lock.lock();
             value = _values.at(0);
             _values.erase(_values.begin());
             _size--;
@@ -41,14 +46,22 @@ class Queue {
         }
         T pop()
         {
-            ScopedLock lock(&_mutex, ScopedLock::BASIC);
+            std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
+            // ScopedLock lock(&_mutex, ScopedLock::BASIC);
             T value = 0;
 
-            _cv.wait(lock.getLock(), [this]{
+            std::cout << "wsh1" << std::endl;
+            cv.wait(lock, [this]{
                 if (_values.empty())
                     return (false);
                 return (true);
             });
+            // _cv.wait(lock.getLock(), [this]{
+            //     if (_values.empty())
+            //         return (false);
+            //     return (true);
+            // });
+            std::cout << "wsh2" << std::endl;
             value = _values.at(0);
             _values.erase(_values.begin());
             _size--;
@@ -69,4 +82,6 @@ class Queue {
         ConditionVariable _cv;
         std::vector<T> _values;
         std::size_t _size = 0;
+        std::mutex mutex;
+        std::condition_variable cv;
 };

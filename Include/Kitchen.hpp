@@ -20,15 +20,16 @@
 
 class Kitchen {
     public:
+        static std::vector<Thread> _threads;
         Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime);
         // Kitchen(Kitchen const &other);
         ~Kitchen();
 
-        bool addPizza(std::shared_ptr<Pizza> pizza);
+        bool addPizza(std::shared_ptr<Pizza> &pizza);
         bool isIngredientAvailable(std::vector<Ingredients> ingredients);
         void consumeIngredients(std::vector<Ingredients> ingredients);
 
-        void createAndJoinCook();
+        void createAndJoinCook(std::shared_ptr<Pizza> &pizza);
         void update();
         bool isClose() const;
 
@@ -48,6 +49,9 @@ class Kitchen {
         std::chrono::time_point<std::chrono::system_clock> _afkStart;
         std::chrono::time_point<std::chrono::system_clock> _refillStart;
         bool _isCopy;
+
+        Thread _thread;
+        void handleKitchen(std::shared_ptr<Pizza> &pizza);
 
         bool isRefill();
         bool isThereAvailableCooks() const;

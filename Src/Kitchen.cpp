@@ -10,7 +10,7 @@
 #include <stdexcept>
 
 Kitchen::Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime) : _id(id), _nbCooks(nbCooks),
-_replaceTime(replaceTime),  _isCopy(false)
+_replaceTime(replaceTime), _isCopy(false)
 {
     _refillStart = std::chrono::system_clock::now();
     _afkStart = std::chrono::system_clock::now();
@@ -25,15 +25,32 @@ Kitchen::~Kitchen()
         std::cout << "The kitchen " << _id << " closes its doors..." << std::endl;
 }
 
-void Kitchen::createAndJoinCook()
+void Kitchen::createAndJoinCook(std::shared_ptr<Pizza> &pizza)
 {
+    _thread.create(&Kitchen::handleKitchen, this, std::ref(pizza));
     for (const auto &c : _cooks) {
         c->create(_pizzas);
+    }
+    _thread.join();
+    for (const auto &c : _cooks) {
         c->join();
     }
 }
 
-bool Kitchen::addPizza(std::shared_ptr<Pizza> pizza)
+void Kitchen::handleKitchen(std::shared_ptr<Pizza> &pizza)
+{
+    static int i = 0;
+
+    while (!isClose()) {
+        if (i == 0)
+            addPizza(pizza);
+        i = 1;
+        update();
+    }
+    std::cout << "close" << std::endl;
+}
+
+bool Kitchen::addPizza(std::shared_ptr<Pizza> &pizza)
 {
     if (_pizzas.size() == 2 * _nbCooks)
         return (false);
@@ -43,15 +60,17 @@ bool Kitchen::addPizza(std::shared_ptr<Pizza> pizza)
 
 void Kitchen::update()
 {
-    isRefill();
+    // isRefill();
     if (!AreAllCooksAvailable())
         _afkStart = std::chrono::system_clock::now();
 }
 
 bool Kitchen::isClose() const
 {
-    if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5))
+    if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5)) {
+        std::cout << "oui" << std::endl;
         return (true);
+    }
     return (false);
 }
 

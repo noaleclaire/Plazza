@@ -43,6 +43,11 @@ void Cook::join()
     _thread.join();
 }
 
+Thread &Cook::getCookThread()
+{
+    return (_thread);
+}
+
 void Cook::handlePizzas(Queue<std::shared_ptr<Pizza>> &pizzas)
 {
     while (!Core::_kitchens.at(_kitchenId)->isClose()) {
@@ -61,6 +66,7 @@ void Cook::handlePizzas(Queue<std::shared_ptr<Pizza>> &pizzas)
         _baking = false;
         pizza->setPizzaBaked(Pizza::YES);
     }
+    std::cout << "close pizza cook " << _id << std::endl;
 }
 
 bool Cook::getBaking() const

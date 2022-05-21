@@ -9,6 +9,7 @@
 #include "../Include/Parser.hpp"
 #include <algorithm>
 #include <iostream>
+#include <unistd.h>
 
 static std::size_t kitchenId = 1;
 float Core::_multiplier;
@@ -26,19 +27,20 @@ void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t repla
         pizzas = parser.getPizzas();
         while (1) {
             std::cout << "test2" << std::endl;
-            for (auto &p : pizzas) {
-                for (auto &k : Core::_kitchens) {
-                    if (k.second->addPizza(p)) {
-                        auto it = std::find(pizzas.begin(), pizzas.end(), p);
-                        pizzas.erase(it);
-                    }
-                    k.second->update();
-                }
-            }
+            // for (auto &p : pizzas) {
+            //     for (auto &k : Core::_kitchens) {
+            //         if (k.second->addPizza(p)) {
+            //             auto it = std::find(pizzas.begin(), pizzas.end(), p);
+            //             pizzas.erase(it);
+            //         }
+            //         k.second->update();
+            //     }
+            // }
             if (pizzas.size() != 0) {
                 Core::_kitchens.insert(std::make_pair(kitchenId, new Kitchen(kitchenId, nbCooks, replaceTime)));
-                Core::_kitchens.at(kitchenId)->createAndJoinCook();
+                Core::_kitchens.at(kitchenId)->createAndJoinCook(pizzas.at(0));
                 kitchenId++;
+                pizzas.erase(pizzas.begin());
             } else {
                 break;
             }
