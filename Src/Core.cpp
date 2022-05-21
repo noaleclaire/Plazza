@@ -29,15 +29,20 @@ void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t repla
         insertPizzaInQueue(pizzas, safePizzas);
         std::cout << "safe " << safePizzas.size() << std::endl;
         while (safePizzas.size() != 0) {
-            std::cout << "test" << pizzas.size() << std::endl;
-            if (safePizzas.size() != 0 && isAllKitchensFull()) {
+            std::cout << "test " << pizzas.size() << std::endl;
+            if (isAllKitchensFull()) {
+                std::cout << "b" << std::endl;
                 Core::_kitchens.insert(std::make_pair(kitchenId, new Kitchen(kitchenId, nbCooks, replaceTime)));
                 Core::_kitchens.at(kitchenId)->createAndJoinCook(std::ref(safePizzas));
                 kitchenId++;
             }
         }
+        std::cout << "test2" << std::endl;
         checkKitchens();
+        std::cout << "test3" << std::endl;
     }
+    for (auto &k : _kitchens)
+        delete k.second;
 }
 
 void Core::checkKitchens()
@@ -47,6 +52,8 @@ void Core::checkKitchens()
             auto it = std::find(Core::_kitchens.begin(), Core::_kitchens.end(), k);
             Core::_kitchens.erase(it);
         }
+        if (_kitchens.size() == 0)
+            break;
     }
 }
 

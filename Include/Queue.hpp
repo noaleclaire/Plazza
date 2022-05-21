@@ -25,7 +25,7 @@ class Queue {
         {
             std::unique_lock<std::mutex> lock(mutex);
             // ScopedLock lock(&_mutex, ScopedLock::BASIC);
-            std::cout << "là1" << std::endl;
+            // std::cout << "là1" << std::endl;
             _values.push_back(value);
             _size++;
             cv.notify_one();
@@ -50,7 +50,7 @@ class Queue {
             // ScopedLock lock(&_mutex, ScopedLock::BASIC);
             T value = 0;
 
-            std::cout << "wsh1" << std::endl;
+            // std::cout << "wsh1" << std::endl;
             cv.wait(lock, [this]{
                 if (_mustQuit)
                     return (true);
@@ -63,7 +63,7 @@ class Queue {
             //         return (false);
             //     return (true);
             // });
-            std::cout << "wsh2" << std::endl;
+            // std::cout << "wsh2" << std::endl;
             if (!_mustQuit) {
                 value = _values.at(0);
                 _values.erase(_values.begin());
