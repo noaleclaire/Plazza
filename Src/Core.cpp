@@ -19,30 +19,21 @@ void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t repla
 {
     Parser parser;
     std::vector<std::shared_ptr<Pizza>> pizzas;
+    Queue<std::shared_ptr<Pizza>> safePizzas;
 
     Core::_multiplier = multiplier;
     while(1) {
         std::cout << "test" << std::endl;
         parser.manageCommandLine();
         pizzas = parser.getPizzas();
-        while (1) {
-            std::cout << "test2" << std::endl;
-            // for (auto &p : pizzas) {
-            //     for (auto &k : Core::_kitchens) {
-            //         if (k.second->addPizza(p)) {
-            //             auto it = std::find(pizzas.begin(), pizzas.end(), p);
-            //             pizzas.erase(it);
-            //         }
-            //         k.second->update();
-            //     }
-            // }
-            if (pizzas.size() != 0) {
+        insertPizzaInQueue(pizzas, safePizzas);
+        std::cout << "safe " << safePizzas.size() << std::endl;
+        while (safePizzas.size() != 0) {
+            std::cout << "test" << pizzas.size() << std::endl;
+            if (safePizzas.size() != 0 && isAllKitchensFull()) {
                 Core::_kitchens.insert(std::make_pair(kitchenId, new Kitchen(kitchenId, nbCooks, replaceTime)));
-                Core::_kitchens.at(kitchenId)->createAndJoinCook(pizzas.at(0));
+                Core::_kitchens.at(kitchenId)->createAndJoinCook(std::ref(safePizzas));
                 kitchenId++;
-                pizzas.erase(pizzas.begin());
-            } else {
-                break;
             }
         }
         checkKitchens();
@@ -56,5 +47,21 @@ void Core::checkKitchens()
             auto it = std::find(Core::_kitchens.begin(), Core::_kitchens.end(), k);
             Core::_kitchens.erase(it);
         }
+    }
+}
+
+bool Core::isAllKitchensFull()
+{
+    for (auto const &k : Core::_kitchens) {
+        if (!k.second->isFull())
+            return (false);
+    }
+    return (true);
+}
+
+void Core::insertPizzaInQueue(std::vector<std::shared_ptr<Pizza>> &pizzas, Queue<std::shared_ptr<Pizza>> &safePizzas)
+{
+    for (auto &p : pizzas) {
+        safePizzas.push(p);
     }
 }

@@ -9,6 +9,7 @@
 #include "../Include/Core.hpp"
 #include "../Include/Kitchen.hpp"
 #include <stdexcept>
+#include <exception>
 #include <memory>
 #include <cmath>
 #include <iostream>
@@ -60,8 +61,7 @@ void Cook::handlePizzas(Queue<std::shared_ptr<Pizza>> &pizzas)
         Core::_kitchens.at(_kitchenId)->consumeIngredients(pizza->getIngredients());
         _baking = true;
         pizza->setPizzaBaked(Pizza::IN_PROGRESS);
-        std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
-        while ((std::chrono::system_clock::now() - start) < std::chrono::milliseconds(std::lround(pizza->getBakedTime() * 1000 * Core::_multiplier)));
+        std::this_thread::sleep_for(std::chrono::milliseconds(std::lround(pizza->getBakedTime() * 1000 * Core::_multiplier)));
         std::cout << "[Kitchen " << _kitchenId << "] Cook " << _id << ": finished baking the pizza " << pizza->getPizzaType() << "." << std::endl;
         _baking = false;
         pizza->setPizzaBaked(Pizza::YES);

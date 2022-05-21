@@ -25,7 +25,7 @@ Kitchen::~Kitchen()
         std::cout << "The kitchen " << _id << " closes its doors..." << std::endl;
 }
 
-void Kitchen::createAndJoinCook(std::shared_ptr<Pizza> &pizza)
+void Kitchen::createAndJoinCook(Queue<std::shared_ptr<Pizza>> &pizza)
 {
     _thread.create(&Kitchen::handleKitchen, this, std::ref(pizza));
     for (const auto &c : _cooks) {
@@ -37,14 +37,14 @@ void Kitchen::createAndJoinCook(std::shared_ptr<Pizza> &pizza)
     }
 }
 
-void Kitchen::handleKitchen(std::shared_ptr<Pizza> &pizza)
+void Kitchen::handleKitchen(Queue<std::shared_ptr<Pizza>> &pizzas)
 {
-    static int i = 0;
-
     while (!isClose()) {
-        if (i == 0)
-            addPizza(pizza);
-        i = 1;
+        if (!pizzas.isEmptyQueue()) {
+            auto pizza = pizzas.pop();
+            if (!addPizza(pizza))
+                pizzas.push(pizza);
+        }
         update();
     }
     std::cout << "close" << std::endl;
@@ -67,11 +67,18 @@ void Kitchen::update()
 
 bool Kitchen::isClose() const
 {
-    if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5)) {
-        std::cout << "oui" << std::endl;
-        return (true);
-    }
+    // if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5)) {
+    //     std::cout << "oui" << std::endl;
+    //     return (true);
+    // }
     return (false);
+}
+
+bool Kitchen::isFull() const
+{
+    if (_pizzas.size() == 2 * _nbCooks)
+        return (false);
+    return (true);
 }
 
 bool Kitchen::isRefill()

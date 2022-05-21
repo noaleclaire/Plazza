@@ -27,4 +27,6 @@ class Core {
     protected:
     private:
         static void checkKitchens();
+        static bool isAllKitchensFull();
+        static void insertPizzaInQueue(std::vector<std::shared_ptr<Pizza>> &pizzas, Queue<std::shared_ptr<Pizza>> &safePizzas);
 };

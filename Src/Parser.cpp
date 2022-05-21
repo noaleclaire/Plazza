@@ -10,10 +10,11 @@
 #include "../Include/Factory.hpp"
 #include "../Include/Kitchen.hpp"
 #include "../Include/Exceptions/PizzaException.hpp"
+#include <iostream>
 
 bool isInteger(std::string str, int &nb);
 
-Parser::Parser() : _start(0)
+Parser::Parser() : _start(0), _status(Parser::ParserStatus::HASNT_PIZZA)
 {
 }
 
@@ -29,6 +30,7 @@ void Parser::manageCommandLine()
     splitCommandLine();
     _cmd.clear();
     _start = 0;
+    _status = HAS_PIZZA;
 }
 
 void Parser::getCommandLine()
@@ -82,6 +84,7 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
     int nb = -1;
 
     _pizzas.clear();
+    std::cout << "[Parser] cmd " << _pizza.size() << std::endl;
     for (int i = 0; i < _pizza.size(); i++) {
         for (int j = 0; j < _pizza.at(i).size(); j++) {
             if (_pizza.at(i).size() != 3) {
@@ -103,7 +106,14 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
                 break;
             }
             createPizza(_pizza.at(i));
+            break;
         }
     }
+    std::cout << "[Parser] size: " << _pizzas.size() << std::endl;
     return (_pizzas);
+}
+
+Parser::ParserStatus Parser::getStatus() const
+{
+    return (_status);
 }

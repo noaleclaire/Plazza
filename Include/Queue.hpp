@@ -46,12 +46,14 @@ class Queue {
         }
         T pop()
         {
-            std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
+            std::unique_lock<std::mutex> lock(mutex);
             // ScopedLock lock(&_mutex, ScopedLock::BASIC);
             T value = 0;
 
             std::cout << "wsh1" << std::endl;
             cv.wait(lock, [this]{
+                if (_mustQuit)
+                    return (true);
                 if (_values.empty())
                     return (false);
                 return (true);
@@ -62,10 +64,13 @@ class Queue {
             //     return (true);
             // });
             std::cout << "wsh2" << std::endl;
-            value = _values.at(0);
-            _values.erase(_values.begin());
-            _size--;
-            return (value);
+            if (!_mustQuit) {
+                value = _values.at(0);
+                _values.erase(_values.begin());
+                _size--;
+                return (value);
+            }
+            return (nullptr);
         }
         bool isEmptyQueue() const
         {
@@ -75,6 +80,11 @@ class Queue {
         {
             return (_size);
         }
+        void quit()
+        {
+            _mustQuit = true;
+            cv.notify_all();
+        };
 
     protected:
     private:
@@ -84,4 +94,5 @@ class Queue {
         std::size_t _size = 0;
         std::mutex mutex;
         std::condition_variable cv;
+        bool _mustQuit = false;
 };

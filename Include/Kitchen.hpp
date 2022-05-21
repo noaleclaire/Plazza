@@ -20,18 +20,17 @@
 
 class Kitchen {
     public:
-        static std::vector<Thread> _threads;
         Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime);
-        // Kitchen(Kitchen const &other);
         ~Kitchen();
 
         bool addPizza(std::shared_ptr<Pizza> &pizza);
         bool isIngredientAvailable(std::vector<Ingredients> ingredients);
         void consumeIngredients(std::vector<Ingredients> ingredients);
 
-        void createAndJoinCook(std::shared_ptr<Pizza> &pizza);
+        void createAndJoinCook(Queue<std::shared_ptr<Pizza>> &pizzas);
         void update();
         bool isClose() const;
+        bool isFull() const;
 
         std::size_t getId()
         {
@@ -51,7 +50,7 @@ class Kitchen {
         bool _isCopy;
 
         Thread _thread;
-        void handleKitchen(std::shared_ptr<Pizza> &pizza);
+        void handleKitchen(Queue<std::shared_ptr<Pizza>> &pizza);
 
         bool isRefill();
         bool isThereAvailableCooks() const;

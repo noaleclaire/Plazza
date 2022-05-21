@@ -19,10 +19,12 @@
 
 class Parser {
     public:
+        enum ParserStatus {HAS_PIZZA, HASNT_PIZZA};
         Parser();
         ~Parser();
 
         void manageCommandLine();
+        ParserStatus getStatus() const;
 
         std::vector<std::shared_ptr<Pizza>> getPizzas();
 
@@ -33,6 +35,7 @@ class Parser {
         std::vector<std::vector<std::string>> _pizza;
         std::vector<std::string> _cmd;
         std::vector<std::shared_ptr<Pizza>> _pizzas;
+        ParserStatus _status;
 
         void createPizza(std::vector<std::string> pizza);
         void getCommandLine();
