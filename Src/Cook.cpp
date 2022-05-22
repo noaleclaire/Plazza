@@ -53,9 +53,12 @@ Thread &Cook::getCookThread()
 void Cook::handlePizzas(Queue<std::shared_ptr<Pizza>> &pizzas)
 {
     while (!Core::_kitchens.at(_kitchenId)->isClose()) {
-        std::cout << pizzas.size() << std::endl;
+        std::cout << "size before " << pizzas.size() << std::endl;
         std::cout << "Cook " << _id << " is waiting" << std::endl;
         auto pizza = pizzas.pop();
+        std::cout << "after size " << pizzas.size() << std::endl;
+        if (pizza == nullptr)
+            break;
         std::cout << "Cook " << _id << " is preparing the pizza" << std::endl;
         while (!Core::_kitchens.at(_kitchenId)->isIngredientAvailable(pizza->getIngredients()));
         std::cout << "[Kitchen " << _kitchenId << "] Cook " << _id << ": starts baking the pizza " << pizza->getPizzaType() << "." << std::endl;

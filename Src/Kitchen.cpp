@@ -48,12 +48,19 @@ void Kitchen::handleKitchen(Queue<std::shared_ptr<Pizza>> &pizzas)
         }
         update();
     }
+    _pizzas.quit();
     std::cout << "close" << std::endl;
 }
 
 bool Kitchen::addPizza(std::shared_ptr<Pizza> &pizza)
 {
-    if (_pizzas.size() == 2 * _nbCooks)
+    int nbCooksOccupied = 0;
+
+    for (auto const &c : _cooks) {
+        if (c->getBaking())
+            nbCooksOccupied++;
+    }
+    if (_pizzas.size() + nbCooksOccupied == 2 * _nbCooks)
         return (false);
     _pizzas.push(pizza);
     return (true);
@@ -61,25 +68,31 @@ bool Kitchen::addPizza(std::shared_ptr<Pizza> &pizza)
 
 void Kitchen::update()
 {
-    // isRefill();
-    if (!AreAllCooksAvailable())
+    isRefill();
+    if (!areAllCooksAvailable())
         _afkStart = std::chrono::system_clock::now();
 }
 
 bool Kitchen::isClose() const
 {
-    // if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5)) {
-    //     std::cout << "oui" << std::endl;
-    //     return (true);
-    // }
+    if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5)) {
+        std::cout << "oui" << std::endl;
+        return (true);
+    }
     return (false);
 }
 
 bool Kitchen::isFull() const
 {
-    if (_pizzas.size() == 2 * _nbCooks)
-        return (false);
-    return (true);
+    int nbCooksOccupied = 0;
+
+    for (auto const &c : _cooks) {
+        if (c->getBaking())
+            nbCooksOccupied++;
+    }
+    if (_pizzas.size() + nbCooksOccupied == 2 * _nbCooks)
+        return (true);
+    return (false);
 }
 
 bool Kitchen::isRefill()
@@ -92,7 +105,7 @@ bool Kitchen::isRefill()
     return (false);
 }
 
-bool Kitchen::AreAllCooksAvailable() const
+bool Kitchen::areAllCooksAvailable() const
 {
     for (auto const &c : _cooks) {
         if (c->getBaking()) {

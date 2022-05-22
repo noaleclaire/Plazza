@@ -54,6 +54,6 @@ class Kitchen {
 
         bool isRefill();
         bool isThereAvailableCooks() const;
-        bool AreAllCooksAvailable() const;
+        bool areAllCooksAvailable() const;
         void refill();
 };
