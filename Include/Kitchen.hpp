@@ -32,9 +32,11 @@ class Kitchen {
         bool isClose() const;
         bool isFull() const;
 
-        std::size_t getId()
+        Queue<std::shared_ptr<Pizza>> &getPizzas();
+        std::size_t getId();
+        Thread &getThreadAt(std::size_t index)
         {
-            return _id;
+            return (*_threads.at(index));
         }
 
     protected:
@@ -44,13 +46,15 @@ class Kitchen {
         std::size_t _replaceTime;
         Queue<std::shared_ptr<Pizza>> _pizzas;
         std::vector<std::pair<Ingredients, std::size_t>> _stock;
-        std::vector<std::shared_ptr<Cook>> _cooks;
+        // std::vector<std::shared_ptr<Cook>> _cooks;
+        std::vector<Thread *> _threads;
         std::chrono::time_point<std::chrono::system_clock> _afkStart;
         std::chrono::time_point<std::chrono::system_clock> _refillStart;
         bool _isCopy;
 
         Thread _thread;
         void handleKitchen(Queue<std::shared_ptr<Pizza>> &pizza);
+        void handleCooks(std::size_t id);
 
         bool isRefill();
         bool isThereAvailableCooks() const;
