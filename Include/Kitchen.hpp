@@ -32,6 +32,9 @@ class Kitchen {
         bool isClose() const;
         bool isFull() const;
 
+        void cookInfo() const;
+        void kitchenInfo() const;
+
         std::size_t getId()
         {
             return _id;

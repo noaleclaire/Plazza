@@ -6,6 +6,7 @@
 */
 
 #include "../Include/Parser.hpp"
+#include "../Include/Core.hpp"
 #include "../Include/Pizza.hpp"
 #include "../Include/Factory.hpp"
 #include "../Include/Kitchen.hpp"
@@ -50,16 +51,16 @@ void Parser::getCommandLine()
 void Parser::splitCommandLine()
 {
     char *line;
-    std::vector<std::string> tok;
+    std::vector<std::string> split;
 
     for (int i = 0; i < _cmd.size(); i++) {
         line = std::strtok(const_cast<char *>(_cmd.at(i).c_str()), " ");
         while (line != nullptr) {
-            tok.push_back(std::string(line));
+            split.push_back(std::string(line));
             line = std::strtok(nullptr, " ");
         }
-        _pizza.push_back(tok);
-        tok.clear();
+        _pizza.push_back(split);
+        split.clear();
     }
 }
 
@@ -87,6 +88,11 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
     std::cout << "[Parser] cmd " << _pizza.size() << std::endl;
     for (int i = 0; i < _pizza.size(); i++) {
         for (int j = 0; j < _pizza.at(i).size(); j++) {
+            if (_pizza.at(i).size() == 1 && _pizza.at(i).at(0).compare("status") == 0) {
+                std::cout << "status of pizza " << std::endl;
+                Core::getInfoKitchen();
+                break;
+            }
             if (_pizza.at(i).size() != 3) {
                 std::cerr << "Command n°" << i << ": Invalid number of arguments.." << std::endl;
                 break;

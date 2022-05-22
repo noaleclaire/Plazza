@@ -15,6 +15,16 @@ static std::size_t kitchenId = 1;
 float Core::_multiplier;
 std::map<std::size_t, Kitchen *> Core::_kitchens;
 
+void Core::getInfoKitchen()
+{
+    for (auto &k : Core::_kitchens) {
+        std::cout << "Kitchen n°: " << k.second->getId()
+        << " informations : " << std::endl;
+        k.second->cookInfo();
+        k.second->kitchenInfo();
+    }
+}
+
 void Core::managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime)
 {
     Parser parser;

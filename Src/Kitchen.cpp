@@ -25,6 +25,28 @@ Kitchen::~Kitchen()
         std::cout << "The kitchen " << _id << " closes its doors..." << std::endl;
 }
 
+void Kitchen::cookInfo() const
+{
+    int i = 0;
+
+    for (const auto &c : _cooks) {
+        std::cout << "The cook n°" << c->getId() << ":" << std::endl;
+        if (c->getBaking() == true) {
+            std::cout << "is baking a pizza." << std::endl;
+        } else  {
+            std::cout << "do nothing." << std::endl;
+        }
+    }
+}
+
+void Kitchen::kitchenInfo() const
+{
+    std::cout << "Ingredients available: " << std::endl;
+    for (int i = 0; i < 9; i++) {
+        std::cout << _stock.at(i).first.getName() << " quantity: " << _stock.at(i).second << std::endl;
+    }
+}
+
 void Kitchen::createAndJoinCook(Queue<std::shared_ptr<Pizza>> &pizza)
 {
     _thread.create(&Kitchen::handleKitchen, this, std::ref(pizza));
