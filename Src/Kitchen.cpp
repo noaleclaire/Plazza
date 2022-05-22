@@ -10,51 +10,29 @@
 #include <stdexcept>
 #include <cmath>
 #include "../Include/Core.hpp"
-#include "../Include/Arg.hpp"
 
 Kitchen::Kitchen(std::size_t id, std::size_t nbCooks, std::size_t replaceTime) : _id(id), _nbCooks(nbCooks),
 _replaceTime(replaceTime), _isCopy(false)
 {
-    std::vector<Arg<Kitchen, std::size_t> *> threadArgs;
     _refillStart = std::chrono::system_clock::now();
     _afkStart = std::chrono::system_clock::now();
-    std::cout << "The kitchen " << _id << " is now open !" << std::endl;
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::DOE), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::TOMATO), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::GRUYERE), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::HAM), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::MUSHROOM), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::STEAK), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::EGGPLANT), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::GOAT_CHEESE), 5));
+    _stock.push_back(std::make_pair(Ingredients(Ingredients::Ingredient::CHIEF_LOVE), 5));
+    Core::_file << "[Kitchen " << _id << "] Is now open !" << std::endl;
     for (std::size_t increm = 0; increm < nbCooks; increm++) {
-        _threads.push_back(new Thread);
-        threadArgs.push_back(new Arg<Kitchen, std::size_t>(*this, increm));
-        _threads.at(increm)->create(&Core::consumer, std::ref(*threadArgs.at(increm)));
-        if (_threads.at(increm)->joinable())
-            _threads.at(increm)->join();
+        _cooks.push_back(std::make_shared<Cook>(Cook(increm + 1, _id)));
     }
-    // _cooks.push_back(std::make_shared<Cook>(Cook(increm + 1, _id)));
-}
-
-void Kitchen::handleCooks(std::size_t id)
-{
-    while (!isClose()) {
-        std::cout << "size before " << _pizzas.size() << std::endl;
-        _threads.at(id)->setStatus(Thread::ThreadStatus::WAIT);
-        auto pizza = _pizzas.pop();
-        std::cout << "after size " << _pizzas.size() << std::endl;
-        if (pizza == nullptr)
-            break;
-        std::cout << "Cook " << _id << " is preparing the pizza" << std::endl;
-        while (!isIngredientAvailable(pizza->getIngredients()));
-        _threads.at(id)->setStatus(Thread::ThreadStatus::OCCUPIED);
-        std::cout << "[Kitchen " << _id << "] starts baking the pizza " << pizza->getPizzaType() << "." << std::endl;
-        consumeIngredients(pizza->getIngredients());
-        pizza->setPizzaBaked(Pizza::IN_PROGRESS);
-        std::this_thread::sleep_for(std::chrono::milliseconds(std::lround(pizza->getBakedTime() * 1000 * Core::_multiplier)));
-        std::cout << "[Kitchen " << _id << "] finished baking the pizza " << pizza->getPizzaType() << "." << std::endl;
-        pizza->setPizzaBaked(Pizza::YES);
-    }
-    std::cout << "close pizza cook " << _id << std::endl;
 }
 
 Kitchen::~Kitchen()
 {
-    if (!_isCopy)
-        std::cout << "The kitchen " << _id << " closes its doors..." << std::endl;
 }
 
 void Kitchen::cookInfo() const
@@ -62,11 +40,11 @@ void Kitchen::cookInfo() const
     int i = 0;
 
     for (const auto &c : _cooks) {
-        std::cout << "The cook n°" << c->getId() << ":" << std::endl;
+        std::cout << "The cook n°" << c->getId() << ":";
         if (c->getBaking() == true) {
-            std::cout << "is baking a pizza." << std::endl;
+            std::cout << " is baking a pizza." << std::endl;
         } else  {
-            std::cout << "do nothing." << std::endl;
+            std::cout << " do nothing." << std::endl;
         }
     }
 }
@@ -74,22 +52,17 @@ void Kitchen::cookInfo() const
 void Kitchen::kitchenInfo() const
 {
     std::cout << "Ingredients available: " << std::endl;
-    for (int i = 0; i < 9; i++) {
-        std::cout << _stock.at(i).first.getName() << " quantity: " << _stock.at(i).second << std::endl;
+    for (auto &s : _stock) {
+        std::cout << "\t- " << s.first.getName() << " quantity: " << s.second << std::endl;
     }
 }
 
 void Kitchen::createAndJoinCook(Queue<std::shared_ptr<Pizza>> &pizza)
 {
-    // _thread.create(&Kitchen::handleKitchen, this, std::ref(pizza));
-    // for (const auto &c : _cooks) {
-    //     c->create(_pizzas);
-    // }
-    // if (_thread.joinable())
-        // _thread.join();
-    // for (const auto &c : _cooks) {
-    //     c->join();
-    // }
+    _thread.create(&Kitchen::handleKitchen, this, std::ref(pizza));
+    for (const auto &c : _cooks) {
+        c->create(_pizzas);
+    }
 }
 
 void Kitchen::handleKitchen(Queue<std::shared_ptr<Pizza>> &pizzas)
@@ -103,15 +76,15 @@ void Kitchen::handleKitchen(Queue<std::shared_ptr<Pizza>> &pizzas)
         update();
     }
     _pizzas.quit();
-    std::cout << "close" << std::endl;
+    Core::_file << "[Kitchen " << _id << "] Closes its doors..." << std::endl;
 }
 
 bool Kitchen::addPizza(std::shared_ptr<Pizza> &pizza)
 {
     int nbCooksOccupied = 0;
 
-    for (auto const &t : _threads) {
-        if (t->getStatus() == Thread::ThreadStatus::OCCUPIED)
+    for (auto const &c : _cooks) {
+        if (c->getBaking())
             nbCooksOccupied++;
     }
     if (_pizzas.size() + nbCooksOccupied == 2 * _nbCooks)
@@ -130,7 +103,6 @@ void Kitchen::update()
 bool Kitchen::isClose() const
 {
     if ((std::chrono::system_clock::now() - _afkStart) >= std::chrono::seconds(5)) {
-        std::cout << "oui" << std::endl;
         return (true);
     }
     return (false);
@@ -140,8 +112,8 @@ bool Kitchen::isFull() const
 {
     int nbCooksOccupied = 0;
 
-    for (auto const &t : _threads) {
-        if (t->getStatus() == Thread::ThreadStatus::OCCUPIED)
+    for (auto const &c : _cooks) {
+        if (c->getBaking())
             nbCooksOccupied++;
     }
     if (_pizzas.size() + nbCooksOccupied == 2 * _nbCooks)
@@ -161,8 +133,8 @@ bool Kitchen::isRefill()
 
 bool Kitchen::areAllCooksAvailable() const
 {
-    for (auto const &t : _threads) {
-        if (t->getStatus() == Thread::ThreadStatus::OCCUPIED) {
+    for (auto const &c : _cooks) {
+        if (c->getBaking()) {
             return (false);
         }
     }
@@ -171,8 +143,8 @@ bool Kitchen::areAllCooksAvailable() const
 
 bool Kitchen::isThereAvailableCooks() const
 {
-    for (auto const &t : _threads) {
-        if (t->getStatus() == Thread::ThreadStatus::WAIT) {
+    for (auto const &c : _cooks) {
+        if (!c->getBaking()) {
             return (true);
         }
     }
@@ -206,11 +178,6 @@ void Kitchen::refill()
 {
     for (auto &s : _stock)
         s.second = 5;
-}
-
-Queue<std::shared_ptr<Pizza>> &Kitchen::getPizzas()
-{
-    return (std::ref(_pizzas));
 }
 
 std::size_t Kitchen::getId()

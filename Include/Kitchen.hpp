@@ -35,10 +35,7 @@ class Kitchen {
         void cookInfo() const;
         void kitchenInfo() const;
 
-        std::size_t getId()
-        {
-            return (_id);
-        }
+        std::size_t getId();
 
     protected:
     private:
@@ -47,8 +44,7 @@ class Kitchen {
         std::size_t _replaceTime;
         Queue<std::shared_ptr<Pizza>> _pizzas;
         std::vector<std::pair<Ingredients, std::size_t>> _stock;
-        // std::vector<std::shared_ptr<Cook>> _cooks;
-        std::vector<Thread *> _threads;
+        std::vector<std::shared_ptr<Cook>> _cooks;
         std::chrono::time_point<std::chrono::system_clock> _afkStart;
         std::chrono::time_point<std::chrono::system_clock> _refillStart;
         bool _isCopy;

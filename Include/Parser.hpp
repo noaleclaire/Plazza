@@ -15,17 +15,17 @@
 #include <cstring>
 #include <map>
 #include <memory>
+#include "Thread.hpp"
 #include "Pizza.hpp"
 
 class Parser {
     public:
-        enum ParserStatus {HAS_PIZZA, HASNT_PIZZA};
         Parser();
         ~Parser();
 
         void manageCommandLine();
-        ParserStatus getStatus() const;
 
+        bool hasPizza();
         std::vector<std::shared_ptr<Pizza>> getPizzas();
 
     protected:
@@ -35,7 +35,7 @@ class Parser {
         std::vector<std::vector<std::string>> _pizza;
         std::vector<std::string> _cmd;
         std::vector<std::shared_ptr<Pizza>> _pizzas;
-        ParserStatus _status;
+        Thread _thread;
 
         void createPizza(std::vector<std::string> pizza);
         void getCommandLine();

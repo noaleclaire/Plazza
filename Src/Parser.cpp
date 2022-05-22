@@ -15,8 +15,9 @@
 
 bool isInteger(std::string str, int &nb);
 
-Parser::Parser() : _start(0), _status(Parser::ParserStatus::HASNT_PIZZA)
+Parser::Parser() : _start(0)
 {
+    _thread.create(&Parser::manageCommandLine, this);
 }
 
 Parser::~Parser()
@@ -25,13 +26,14 @@ Parser::~Parser()
 
 void Parser::manageCommandLine()
 {
-    std::getline(std::cin, _buffer);
-    getCommandLine();
-    _buffer.clear();
-    splitCommandLine();
-    _cmd.clear();
-    _start = 0;
-    _status = HAS_PIZZA;
+    while (1) {
+        std::getline(std::cin, _buffer);
+        getCommandLine();
+        _buffer.clear();
+        splitCommandLine();
+        _cmd.clear();
+        _start = 0;
+    }
 }
 
 void Parser::getCommandLine()
@@ -85,11 +87,9 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
     int nb = -1;
 
     _pizzas.clear();
-    std::cout << "[Parser] cmd " << _pizza.size() << std::endl;
     for (int i = 0; i < _pizza.size(); i++) {
         for (int j = 0; j < _pizza.at(i).size(); j++) {
             if (_pizza.at(i).size() == 1 && _pizza.at(i).at(0).compare("status") == 0) {
-                std::cout << "status of pizza " << std::endl;
                 Core::getInfoKitchen();
                 break;
             }
@@ -116,11 +116,12 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
         }
     }
     _pizza.clear();
-    std::cout << "[Parser] size: " << _pizzas.size() << std::endl;
     return (_pizzas);
 }
 
-Parser::ParserStatus Parser::getStatus() const
+bool Parser::hasPizza()
 {
-    return (_status);
+    if (_pizza.empty())
+        return (false);
+    return (true);
 }

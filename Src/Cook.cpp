@@ -53,24 +53,23 @@ Thread &Cook::getCookThread()
 void Cook::handlePizzas(Queue<std::shared_ptr<Pizza>> &pizzas)
 {
     while (!Core::_kitchens.at(_kitchenId)->isClose()) {
-        std::cout << "size before " << pizzas.size() << std::endl;
-        std::cout << "Cook " << _id << " is waiting" << std::endl;
+        Core::_file << "Cook " << _id << " is waiting" << std::endl;
         auto pizza = pizzas.pop();
-        std::cout << "after size " << pizzas.size() << std::endl;
         if (pizza == nullptr)
             break;
-        std::cout << "Cook " << _id << " is preparing the pizza" << std::endl;
         while (!Core::_kitchens.at(_kitchenId)->isIngredientAvailable(pizza->getIngredients()));
-        std::cout << "[Kitchen " << _kitchenId << "] Cook " << _id << ": starts baking the pizza " << pizza->getPizzaType() << "." << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(std::rand() % 500 + 50));
+        Core::_file << "[Kitchen " << _kitchenId << "] Cook " << _id << ": starts baking the pizza " << pizza->getPizzaType() << "." << std::endl;
         Core::_kitchens.at(_kitchenId)->consumeIngredients(pizza->getIngredients());
         _baking = true;
         pizza->setPizzaBaked(Pizza::IN_PROGRESS);
         std::this_thread::sleep_for(std::chrono::milliseconds(std::lround(pizza->getBakedTime() * 1000 * Core::_multiplier)));
-        std::cout << "[Kitchen " << _kitchenId << "] Cook " << _id << ": finished baking the pizza " << pizza->getPizzaType() << "." << std::endl;
+        Core::_file << "[Kitchen " << _kitchenId << "] Cook " << _id << ": finished baking the pizza " << pizza->getPizzaType() << "." << std::endl;
         _baking = false;
         pizza->setPizzaBaked(Pizza::YES);
     }
-    std::cout << "close pizza cook " << _id << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    Core::_file << "Cook " << _id << " from kitchen " << _kitchenId << " goes home..." << std::endl;
 }
 
 bool Cook::getBaking() const

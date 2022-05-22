@@ -44,7 +44,7 @@ class Queue {
             ScopedLock lock(&_mutex, ScopedLock::BASIC);
             T value = 0;
 
-            _cv.wait(lock, [this]{
+            _cv.wait(lock.getLock(), [this]{
                 if (_mustQuit)
                     return (true);
                 if (_values.empty())
@@ -70,7 +70,7 @@ class Queue {
         void quit()
         {
             _mustQuit = true;
-            _cv.notify_all();
+            _cv.notifyAll();
         };
 
     protected:
