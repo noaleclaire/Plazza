@@ -109,6 +109,7 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
             break;
         }
     }
+    _pizza.clear();
     std::cout << "[Parser] size: " << _pizzas.size() << std::endl;
     return (_pizzas);
 }

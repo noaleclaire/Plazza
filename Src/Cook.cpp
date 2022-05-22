@@ -41,7 +41,8 @@ void Cook::create(Queue<std::shared_ptr<Pizza>> &pizzas)
 
 void Cook::join()
 {
-    _thread.join();
+    if (_thread.joinable())
+        _thread.join();
 }
 
 Thread &Cook::getCookThread()

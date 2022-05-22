@@ -31,7 +31,8 @@ void Kitchen::createAndJoinCook(Queue<std::shared_ptr<Pizza>> &pizza)
     for (const auto &c : _cooks) {
         c->create(_pizzas);
     }
-    _thread.join();
+    if (_thread.joinable())
+        _thread.join();
     for (const auto &c : _cooks) {
         c->join();
     }

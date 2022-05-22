@@ -22,6 +22,6 @@ int main(int ac, char **av)
         return (84);
     if (!checkErrorArgs(av))
         return (84);
-    Core::managePlazza(atoi(av[1]), atoi(av[2]), atoi(av[3]));
+    Core::managePlazza(atof(av[1]), atoi(av[2]), atoi(av[3]));
     return (0);
 }

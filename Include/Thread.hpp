@@ -21,7 +21,13 @@ class Thread {
         void detach()
         {
             _thread.detach();
-        }
+        };
+        bool joinable()
+        {
+            if (_thread.joinable())
+                return (true);
+            return (false);
+        };
         template<typename Function, typename... Args>
         void create(Function fct, Args&&... args)
         {
