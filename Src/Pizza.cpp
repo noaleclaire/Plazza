@@ -41,6 +41,7 @@ Pizza::Pizza(std::string &pizzaType, std::string &pizzaSize)
         " Error in : Pizza::Pizza(std::string &pizzaType, std::size_t &pizzaSize)");
     }
     this->_pizzaSize = pizzaSizes.at(pizzaSize);
+    setIngredients();
 }
 
 Pizza::~Pizza()
