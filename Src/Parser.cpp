@@ -42,7 +42,6 @@ void Parser::getCommandLine()
 
     for (i = 0 ; i < _buffer.length(); i++) {
         if (_buffer.at(i) == ';') {
-            std::cout << _buffer.substr(_start, i - _start) << std::endl;
             _cmd.push_back(_buffer.substr(_start, i - _start));
             _start = i + 2;
         }
