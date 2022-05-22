@@ -32,11 +32,12 @@ class Kitchen {
         bool isClose() const;
         bool isFull() const;
 
-        Queue<std::shared_ptr<Pizza>> &getPizzas();
-        std::size_t getId();
-        Thread &getThreadAt(std::size_t index)
+        void cookInfo() const;
+        void kitchenInfo() const;
+
+        std::size_t getId()
         {
-            return (*_threads.at(index));
+            return (_id);
         }
 
     protected:

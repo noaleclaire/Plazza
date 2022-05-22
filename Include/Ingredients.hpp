@@ -24,7 +24,7 @@ class Ingredients {
         };
         Ingredients(Ingredient ing);
         ~Ingredients();
-        std::string getName();
+        std::string getName() const;
 
     protected:
     private:

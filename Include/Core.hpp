@@ -21,8 +21,11 @@ class Core {
         static float _multiplier;
 
         static void managePlazza(float multiplier, std::size_t nbCooks, std::size_t replaceTime);
-        static void producer(Arg<Kitchen, Queue<std::shared_ptr<Pizza>>> &args);
-        static void consumer(Arg<Kitchen, std::size_t> &args);
+        static void getInfoKitchen();
+        static int getSize()
+        {
+            return (_kitchens.size());
+        }
 
     protected:
     private:
