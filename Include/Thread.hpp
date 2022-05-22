@@ -11,6 +11,7 @@
 
 class Thread {
     public:
+        enum ThreadStatus {OCCUPIED, WAIT};
         Thread() = default;
         ~Thread() = default;
 
@@ -33,8 +34,17 @@ class Thread {
         {
             _thread = std::thread(fct, args...);
         };
+        ThreadStatus getStatus() const
+        {
+            return (_status);
+        };
+        void setStatus(ThreadStatus status)
+        {
+            _status = status;
+        };
 
     protected:
     private:
         std::thread _thread;
+        ThreadStatus _status = WAIT;
 };

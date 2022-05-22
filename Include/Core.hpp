@@ -11,6 +11,9 @@
 #include <map>
 #include <memory>
 #include "Kitchen.hpp"
+#include "Pizza.hpp"
+#include "Queue.hpp"
+#include "Arg.hpp"
 
 class Core {
     public:
