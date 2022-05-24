@@ -24,7 +24,6 @@ class Parser {
         ~Parser();
 
         void manageCommandLine();
-
         bool hasPizza();
         std::vector<std::shared_ptr<Pizza>> getPizzas();
 

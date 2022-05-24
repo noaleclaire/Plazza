@@ -12,6 +12,7 @@
 #include "../Include/Kitchen.hpp"
 #include "../Include/Exceptions/PizzaException.hpp"
 #include <iostream>
+#include <algorithm>
 
 bool isInteger(std::string str, int &nb);
 
@@ -28,6 +29,8 @@ void Parser::manageCommandLine()
 {
     while (1) {
         std::getline(std::cin, _buffer);
+        if (std::cin.eof())
+            exit(0);
         getCommandLine();
         _buffer.clear();
         splitCommandLine();
@@ -68,7 +71,9 @@ void Parser::splitCommandLine()
 void Parser::createPizza(std::vector<std::string> pizza)
 {
     std::string pizzaType = pizza.at(0);
+    std::transform(pizzaType.begin(), pizzaType.end(), pizzaType.begin(), [] (unsigned char c) -> unsigned char {return std::tolower(c);});
     std::string pizzaSize = pizza.at(1);
+    std::transform(pizzaSize.begin(), pizzaSize.end(), pizzaSize.begin(), [] (unsigned char c) -> unsigned char {return std::toupper(c);});
     int pizza_nb = 0;
 
     isInteger((pizza.at(2).substr(1, pizza.at(2).length() - 1)), pizza_nb);
@@ -98,7 +103,7 @@ std::vector<std::shared_ptr<Pizza>> Parser::getPizzas()
             }
             if (_pizza.at(i).at(2).at(_pizza.at(i).at(2).length() - 1) == ';')
                 _pizza.at(i).at(2).at(_pizza.at(i).at(2).length() - 1) = '\0';
-            if (_pizza.at(i).at(2).at(0) != 'x') {
+            if (_pizza.at(i).at(2).at(0) != 'x' && _pizza.at(i).at(2).at(0) != 'X') {
                 std::cerr << "Command n°" << i << ": Invalid numbers of pizza (x(N)).." << std::endl;
                 break;
             }
